@@ -1,15 +1,16 @@
 FROM golang:latest
 
-RUN mkdir /build
-WORKDIR /build
+WORKDIR /app
 
-RUN export GO111MODULE=on 
+COPY go.mod ./
+RUN go mod download 
 
-RUN go get github.com/komal-gogi/go-on-prem
-RUN cd /build && git clone https://github.com/komal-gogi/go-on-prem.git
+# RUN go get github.com/komal-gogi/go-on-prem
+RUN cd ./ && git clone https://github.com/komal-gogi/go-on-prem.git
 
-RUN cd /build/go-on-prem/src && go build
+COPY *.go ./
+RUN go build -o /go-docker
 
 EXPOSE 8080
 
-ENTRYPOINT ["/build/go-on-prem/src/main"]
+CMD ["/go-docker"]
